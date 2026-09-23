@@ -3,6 +3,4 @@ langchain
 langchain-community
 langchain-core
 langchain-google-genai
-langchain-huggingface
 chromadb
-sentence-transformers
