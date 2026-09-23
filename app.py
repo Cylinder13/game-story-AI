@@ -9,8 +9,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
-st.set_page_config(page_title="나만의 RAG 챗봇", page_icon="🤖")
-st.title("🤖 나만의 DB 기반 RAG 챗봇")
+st.set_page_config(page_title="스토리 분석 AI")
+st.title("스토리 분석 AI")
 
 # 1. API 키 확인 (환경 변수에서 로드)
 api_key = os.environ.get("GEMINI_API_KEY")
