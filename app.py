@@ -36,7 +36,7 @@ def init_rag_chain():
     splits = text_splitter.split_documents(docs)
 
     # 구글 Gemini 공식 임베딩 사용 (Render 512MB 메모리 한계 완벽 회피)
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
     vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
     retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
