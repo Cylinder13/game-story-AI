@@ -3,9 +3,8 @@ import glob
 import streamlit as st
 from langchain_community.document_loaders import TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_community.vectorstores import Chroma
-from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
@@ -16,11 +15,11 @@ st.title("🤖 나만의 DB 기반 RAG 챗봇")
 # 1. API 키 확인 (환경 변수에서 로드)
 api_key = os.environ.get("GEMINI_API_KEY")
 if not api_key:
-    st.error("Secrets에 GEMINI_API_KEY가 설정되지 않았습니다.")
+    st.error("Secrets/Environment Variables에 GEMINI_API_KEY가 설정되지 않았습니다.")
     st.stop()
 os.environ["GOOGLE_API_KEY"] = api_key
 
-# 2. Vector DB 생성 (캐싱 처리로 속도 최적화)
+# 2. Vector DB 생성 (구글 클라우드 임베딩으로 서버 메모리 0MB 사용)
 @st.cache_resource
 def init_rag_chain():
     # 모든 .md 파일을 찾아 로드
@@ -36,12 +35,8 @@ def init_rag_chain():
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     splits = text_splitter.split_documents(docs)
 
-    # CPU용 한국어 임베딩 설정 (무료 서버 안정성용)
-    embeddings = HuggingFaceEmbeddings(
-        model_name="jhgan/ko-sroberta-multitask",
-        model_kwargs={'device': 'cpu'},
-        encode_kwargs={'normalize_embeddings': True}
-    )
+    # 구글 Gemini 공식 임베딩 사용 (Render 512MB 메모리 한계 완벽 회피)
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/text-embedding-004")
     vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
     retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
 
