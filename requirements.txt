@@ -4,3 +4,4 @@ langchain-community
 langchain-core
 langchain-google-genai
 chromadb
+supabase
