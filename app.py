@@ -31,7 +31,7 @@ if supabase_url and supabase_key:
 # 2. Vector DB 생성 (Gemini 최신 임베딩 모델)
 @st.cache_resource
 def init_rag_chain():
-    md_files = glob.glob("*.md")
+    md_files = glob.glob("**/*.md", recursive=True)
     if not md_files:
         return None, "저장소에 .md 파일이 없습니다."
     
